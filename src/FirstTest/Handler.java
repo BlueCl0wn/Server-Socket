@@ -11,6 +11,7 @@ public class Handler {
     System.out.println("started Handler");
     
     GreetServer server = new GreetServer(6667);
+    server.start();
 
     System.out.println("1");
     

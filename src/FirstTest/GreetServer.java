@@ -7,7 +7,7 @@ import java.lang.Thread;
 /**
  * @author Darek Petersen
  */
-public class GreetServer {
+public class GreetServer extends Thread{
     private ServerSocket server;
 
     public int port;
@@ -16,7 +16,9 @@ public class GreetServer {
         System.out.println("started Server");
 
         this.port = port;
+    }
 
+    public void run() {
         startConnection();
     }
 

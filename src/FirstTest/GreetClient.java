@@ -61,7 +61,8 @@ public class GreetClient extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sendMessage("Hello World!");
+        String x = sendMessage("Hello World!");
+        System.out.println(x);
         stopConnection();
     }
 
