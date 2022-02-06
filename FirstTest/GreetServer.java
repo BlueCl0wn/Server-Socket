@@ -57,16 +57,19 @@ public class GreetServer extends Thread{
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
 
-                    if (".".equals(inputLine)) {
+                    if(".".equals(inputLine)) {
                         out.println("bye");
                         break;
-                    } else if ("Hello World!".equals(inputLine)) {
+                    } else if("".equals(inputLine)) {
+                        break;
+                    } else if("Hello World!".equals(inputLine)) {
                         System.out.println(inputLine);
                         out.println("Hello World to you as well, my dear friend!");
                     } else {
-                        out.println("I can no understand your gibberish.");
+                        out.println("I cannot understand your gibberish.");
+                        break;
                     }
-                    out.println(inputLine);
+                    System.out.println(inputLine);
                 }
                 stopConnection();
             } catch (Exception e) {
