@@ -17,14 +17,14 @@ public class GreetClient extends Thread {
     private BufferedReader in;
 
     // address and port
-    public String ip;
-    public int port;
+    private final String ip;
+    private final int port;
 
     // identifier
     public int id;
 
     // input
-    Scanner scanner;
+    private Scanner scanner;
 
     /**
      * Main-Constructor
@@ -103,17 +103,21 @@ public class GreetClient extends Thread {
             out.println(msg);
 
             String answer = in.readLine();
-            if (".".equals(answer)) {
-                System.out.println("Recipient closed connection.");
-                this.stopConnection();
-                return false;
-            } else if ("".equals(answer)) {
-                System.out.println("Answer loop ended");
-                return true;
-            } else {
-                System.out.print("Answer: ");
-                System.out.println(answer);
-                return true;
+            switch (answer) {
+                case ".": {
+                    System.out.println("Recipient closed connection.");
+                    this.stopConnection();
+                    return false;
+                }
+                case "": {
+                    System.out.println("Answer loop ended");
+                    return true;
+                }
+                default: {
+                    System.out.print("Answer: ");
+                    System.out.println(answer);
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

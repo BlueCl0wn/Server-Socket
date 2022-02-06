@@ -10,7 +10,7 @@ import java.lang.Thread;
 public class GreetServer extends Thread{
     private ServerSocket server;
 
-    public int port;
+    public final int port;
 
     public GreetServer(int port) {
         System.out.println("started Server");
@@ -26,7 +26,7 @@ public class GreetServer extends Thread{
      * Connect to server and host loop for multiple clients.
      * Close Connection when done.
      */
-    public void startConnection() {
+    private void startConnection() {
         try {
                 server = new ServerSocket(this.port);
             for (int i = 0; i < 5; i++) {
@@ -55,19 +55,21 @@ public class GreetServer extends Thread{
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
                 String inputLine;
+                label:
                 while ((inputLine = in.readLine()) != null) {
-
-                    if(".".equals(inputLine)) {
-                        out.println("bye");
-                        break;
-                    } else if("".equals(inputLine)) {
-                        break;
-                    } else if("Hello World!".equals(inputLine)) {
-                        System.out.println(inputLine);
-                        out.println("Hello World to you as well, my dear friend!");
-                    } else {
-                        out.println("I cannot understand your gibberish.");
-                        break;
+                    switch (inputLine) {
+                        case ".":
+                            out.println("bye");
+                            break label;
+                        case "":
+                            break label;
+                        case "Hello World!":
+                            System.out.println(inputLine);
+                            out.println("Hello World to you as well, my dear friend!");
+                            break;
+                        default:
+                            out.println("I cannot understand your gibberish.");
+                            break label;
                     }
                     System.out.println(inputLine);
                 }
