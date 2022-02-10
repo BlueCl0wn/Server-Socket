@@ -17,11 +17,11 @@ public class GreetServer extends Thread{
 
     private static boolean isRunning;
 
-    static ArrayList<Integer> rooms;
+    static ArrayList<Integer> openRooms;
 
     public int port;
 
-    // ArrayList to save rooms
+    // ArrayList to save openRooms
     //ArrayList<>
 
 
@@ -36,7 +36,7 @@ public class GreetServer extends Thread{
         isRunning = true;
 
         // List to store room numbers
-        rooms = new ArrayList<>();
+        openRooms = new ArrayList<>();
 
         // Stores port on which the server is opened
         this.port = port;
@@ -49,7 +49,6 @@ public class GreetServer extends Thread{
         }
 
     }
-
 
     /**
      * Generator 2
@@ -66,6 +65,9 @@ public class GreetServer extends Thread{
         System.out.println(this.port);
     }
 
+    /**
+     *
+     */
     public void run() {
         startConnection();
     }
@@ -88,21 +90,12 @@ public class GreetServer extends Thread{
     }
 
     /**
-     * Generates a random unused int to be used as a roomId
-     * @return roomId
+     * Closes a room
+     * @param roomId ID of the room that is to be closed.
+     * @return Boolean: worked or not.
      */
-    protected int generateRoomId() {
-        Random rand = new Random();
-        int roomId;
-        do {
-            roomId = round(1000 + 8999 * rand.nextFloat());
-        } while (rooms.contains(roomId));
-
-        return roomId;
-    }
-
     private boolean closeRoom(String roomId) {
-        return rooms.remove(roomId);
+        return openRooms.remove(roomId);
     }
 
 
