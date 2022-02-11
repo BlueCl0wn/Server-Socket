@@ -6,11 +6,13 @@ import java.lang.Thread;
 
 /**
  * @author Darek Petersen
+ * @version 1.0
  */
 public class GreetServer extends Thread{
     private ServerSocket server;
 
     public final int port;
+
 
     public GreetServer(int port) {
         System.out.println("started Server");
