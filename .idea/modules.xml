@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Server-Socket.iml" filepath="$PROJECT_DIR$/.idea/Server-Socket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/Server-Socket.iml" filepath="$PROJECT_DIR$/src/Server-Socket.iml" />
     </modules>
   </component>
 </project>
