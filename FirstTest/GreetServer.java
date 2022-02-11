@@ -3,23 +3,71 @@ package FirstTest;
 import java.net.*;
 import java.io.*;
 import java.lang.Thread;
+import java.util.ArrayList;
+import java.util.Random;
+
+import static java.lang.Math.round;
 
 /**
  * @author Darek Petersen
- * @version 1.0
  */
 public class GreetServer extends Thread{
+    // ServerSocket instance
     private ServerSocket server;
 
-    public final int port;
+    private static boolean isRunning;
+
+    static ArrayList<Integer> openRooms;
+
+    public int port;
+
+    // ArrayList to save openRooms
+    //ArrayList<>
 
 
+    /**
+     * Main Constructor
+     * @param port Port number on which to open server
+     */
     public GreetServer(int port) {
         System.out.println("started Server");
 
+        // Indicates status of the server
+        isRunning = true;
+
+        // List to store room numbers
+        openRooms = new ArrayList<>();
+
+        // Stores port on which the server is opened
         this.port = port;
+
+        // Open server
+        try {
+            server = new ServerSocket(this.port);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
+    /**
+     * Generator 2
+     */
+    public GreetServer() {
+        // Use 0 as port number to automatically choose free port
+        this(0);
+
+        // Save assigned port number for later usage
+        this.port = server.getLocalPort();
+
+        // Print out server port for clients to connect to.
+        System.out.print("Started server on port: ");
+        System.out.println(this.port);
+    }
+
+    /**
+     *
+     */
     public void run() {
         startConnection();
     }
@@ -30,9 +78,8 @@ public class GreetServer extends Thread{
      */
     private void startConnection() {
         try {
-                server = new ServerSocket(this.port);
-            for (int i = 0; i < 5; i++) {
-                new GreetServerHandler(server.accept()).start();
+            while (isRunning) {
+                new GreetServerClientHandler(server.accept()).start();
             }
 
             server.close();
@@ -42,57 +89,15 @@ public class GreetServer extends Thread{
         }
     }
 
-    public static class GreetServerHandler extends Thread {
-        private final Socket client;
-        private PrintWriter out;
-        private BufferedReader in;
-
-        public GreetServerHandler(Socket socket) {
-            this.client = socket;
-        }
-
-        public void run() {
-            try {
-                out = new PrintWriter(client.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-                String inputLine;
-                label:
-                while ((inputLine = in.readLine()) != null) {
-                    switch (inputLine) {
-                        case ".":
-                            out.println("bye");
-                            break label;
-                        case "":
-                            break label;
-                        case "Hello World!":
-                            System.out.println(inputLine);
-                            out.println("Hello World to you as well, my dear friend!");
-                            break;
-                        default:
-                            out.println("I cannot understand your gibberish.");
-                            break label;
-                    }
-                    System.out.println(inputLine);
-                }
-                stopConnection();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void stopConnection() {
-            try {
-                in.close();
-                out.close();
-
-                this.client.close();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
+    /**
+     * Closes a room
+     * @param roomId ID of the room that is to be closed.
+     * @return Boolean: worked or not.
+     */
+    private boolean closeRoom(String roomId) {
+        return openRooms.remove(roomId);
     }
+
+
 
 }

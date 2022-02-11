@@ -104,7 +104,7 @@ public class GreetClient extends Thread {
 
             String answer = in.readLine();
             switch (answer) {
-                case ".": {
+                case "STOP": {
                     System.out.println("Recipient closed connection.");
                     this.stopConnection();
                     return false;
@@ -135,6 +135,7 @@ public class GreetClient extends Thread {
             in.close();
             out.close();
             clientSocket.close();
+            System.out.print("Client disconnected");
         } catch (Exception e) {
             e.printStackTrace();
         }
