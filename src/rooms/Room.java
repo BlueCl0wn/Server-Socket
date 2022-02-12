@@ -72,7 +72,7 @@ public class Room {
         return false;
     }
 
-    public boolean removeClient(GreetServerClientHandler client) {
+    public boolean removeClient(GreetServerClientHandler client) { // TODO erst schließen, wenn wirklich leer
         int pos = contains(clients, client);
         if (pos >= 0) {
             clients[pos] = null;
@@ -127,7 +127,7 @@ public class Room {
         }
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty() { // TODO get it done!
         public boolean _isEmpty;
         for (GreetServerClientHandler c : clients) {
             if ( c == null) {
