@@ -1,21 +1,24 @@
 package rooms;
 
-import FirstTest.GreetServerClientHandler;
+import firstTest.GreetServerClientHandler;
 
 /**
  * @author Darek Petersen
  */
 public class Room {
-    public int id;
+    public final int id;
 
-    GreetServerClientHandler[] clients = new GreetServerClientHandler[2];
+    public final GreetServerClientHandler[] clients;
 
     /**
      * Main Constructor
+     *
      * @param id roomID of this room
      */
-    public Room(int id, GreetServerClientHandler client1,GreetServerClientHandler client2) {
+    public Room(int id, GreetServerClientHandler client1, GreetServerClientHandler client2) {
         this.id = id;
+
+        clients = new GreetServerClientHandler[2];
 
         //
         clients[0] = client1;
@@ -24,33 +27,33 @@ public class Room {
 
     /**
      * Main Constructor
+     *
      * @param id roomID of this room
      */
     public Room(int id, GreetServerClientHandler client1) {
-        this.id = id;
-
-        //
-        clients[0] = client1;
+        this(id, client1, null);
     }
 
     /**
      * Main Constructor
+     *
      * @param id roomID of this room
      */
     public Room(int id) {
-        this.id = id;
+        this(id, null, null);
     }
 
 
     /**
      * Check if a client is in an array.
+     *
      * @param array Array that is to be searched through
-     * @param c Client
+     * @param c     Client
      * @return boolean
      */
     public static int contains(final GreetServerClientHandler[] array, final GreetServerClientHandler c) {
-        for(int i = 0; i < array.length; i++){
-            if(array[i] == c) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == c) {
                 return i;
             }
         }
@@ -58,12 +61,15 @@ public class Room {
     }
 
     public boolean addClient(GreetServerClientHandler client) {
-        if (clients[1] == null) {
-            clients[1] = client;
-            return true;
-            } else {
-            return false;
+        for (GreetServerClientHandler c : clients) {
+            if (c == null) {
+                clients[1] = client;
+                return true;
+            } else if (c == client) {
+                return false;
+            }
         }
+        return false;
     }
 
     public boolean removeClient(GreetServerClientHandler client) {
@@ -78,6 +84,7 @@ public class Room {
 
     /**
      * Checks for equality with parsed ID.
+     *
      * @param checkingId ID that is being compared
      * @return boolean
      */
@@ -88,6 +95,7 @@ public class Room {
     /**
      * Overrides hashcode method
      * I know that it doesn't even use a hash method, but whatever.
+     *
      * @return Hashcode
      */
     @Override
@@ -96,8 +104,10 @@ public class Room {
         return prime + this.id;
     }
 
-    /** Override .equals() method
+    /**
+     * Override .equals() method
      * Allows comparison of two instances of Room
+     *
      * @param obj Other Room instance
      * @return boolean
      */
@@ -115,5 +125,16 @@ public class Room {
         } else {
             return this.id == other.id;
         }
+    }
+
+    public boolean isEmpty() {
+        public boolean _isEmpty;
+        for (GreetServerClientHandler c : clients) {
+            if ( c == null) {
+                _isEmpty = true;
+            }
+        }
+        _isEmpty = false;
+        return _isEmpty;
     }
 }

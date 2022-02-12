@@ -1,4 +1,4 @@
-package FirstTest;
+package firstTest;
 
 import java.net.*;
 import java.io.*;
@@ -21,10 +21,10 @@ public class GreetClient extends Thread {
     private final int port;
 
     // identifier
-    public int id;
+    public final int id;
 
     // input
-    private Scanner scanner;
+    private final Scanner scanner;
 
     /**
      * Main-Constructor
@@ -36,7 +36,7 @@ public class GreetClient extends Thread {
     public GreetClient(String ip, int port, int id) {
         this.ip = ip;
         this.port = port;
-        this.id = id;
+        this.id = id; // TODO add a system that generates unique user-IDs at random
 
         // instantiates scanner
         this.scanner = new Scanner(System.in);
@@ -104,16 +104,17 @@ public class GreetClient extends Thread {
 
             String answer = in.readLine();
             switch (answer) {
-                case "STOP": {
+                case "STOP" -> {
                     System.out.println("Recipient closed connection.");
+                    out.println("STOP");
                     this.stopConnection();
                     return false;
                 }
-                case "": {
+                case "" -> {
                     System.out.println("Answer loop ended");
                     return true;
                 }
-                default: {
+                default -> {
                     System.out.print("Answer: ");
                     System.out.println(answer);
                     return true;

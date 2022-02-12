@@ -1,12 +1,7 @@
-package FirstTest;
+package firstTest;
 
 import java.net.*;
-import java.io.*;
 import java.lang.Thread;
-import java.util.ArrayList;
-import java.util.Random;
-
-import static java.lang.Math.round;
 
 /**
  * @author Darek Petersen
@@ -17,6 +12,7 @@ public class GreetServer extends Thread{
 
     private static boolean isRunning;
 
+    public final rooms.Rooms Rooms;
 
     public int port;
 
@@ -28,14 +24,14 @@ public class GreetServer extends Thread{
      * Main Constructor
      * @param port Port number on which to open server
      */
-    public GreetServer(int port) {
+    public GreetServer(int port, rooms.Rooms Rooms) {
         System.out.println("started Server");
 
         // Indicates status of the server
         isRunning = true;
 
         // List to store room numbers
-        openRooms = new ArrayList<>();
+        this.Rooms = Rooms;
 
         // Stores port on which the server is opened
         this.port = port;
@@ -52,9 +48,9 @@ public class GreetServer extends Thread{
     /**
      * Generator 2
      */
-    public GreetServer() {
+    public GreetServer(rooms.Rooms Rooms) {
         // Use 0 as port number to automatically choose free port
-        this(0);
+        this(0, Rooms);
 
         // Save assigned port number for later usage
         this.port = server.getLocalPort();
@@ -78,7 +74,7 @@ public class GreetServer extends Thread{
     private void startConnection() {
         try {
             while (isRunning) {
-                new GreetServerClientHandler(server.accept()).start();
+                new GreetServerClientHandler(server.accept(), this.Rooms).start();
             }
 
             server.close();
@@ -87,16 +83,4 @@ public class GreetServer extends Thread{
             e.printStackTrace();
         }
     }
-
-    /**
-     * Closes a room
-     * @param roomId ID of the room that is to be closed.
-     * @return Boolean: worked or not.
-     */
-    private boolean closeRoom(String roomId) {
-        return openRooms.remove(roomId);
-    }
-
-
-
 }
