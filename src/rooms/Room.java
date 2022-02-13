@@ -4,6 +4,7 @@ import server.GreetServerClientHandler;
 
 /**
  * @author Darek Petersen
+ * @version 1.0
  */
 public class Room {
     public final int id;

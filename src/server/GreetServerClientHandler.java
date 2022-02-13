@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
+/**
+ * @author Darek Petersen
+ * @version 1.0
+ */
 public class GreetServerClientHandler extends Thread{
     private final Socket clientSocket;
     private PrintWriter out;

@@ -3,6 +3,7 @@ import server.GreetServer;
 
 /**
  * @author Darek Petersen
+ * @version 1.0
  */
 public class Handler {
     public static rooms.Rooms Rooms;

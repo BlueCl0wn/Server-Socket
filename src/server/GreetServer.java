@@ -5,6 +5,7 @@ import java.lang.Thread;
 
 /**
  * @author Darek Petersen
+ * @version 1.0
  */
 public class GreetServer extends Thread{
     // ServerSocket instance

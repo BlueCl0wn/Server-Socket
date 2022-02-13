@@ -10,6 +10,7 @@ import static java.lang.Math.round;
 
 /**
  * @author Darek Petersem
+ * @version 1.0
  */
 public class Rooms {
     private final ArrayList<Room> openRooms;
