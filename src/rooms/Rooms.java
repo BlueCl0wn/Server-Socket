@@ -1,6 +1,6 @@
 package rooms;
 
-import firstTest.GreetServerClientHandler;
+import server.GreetServerClientHandler;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,7 +23,7 @@ public class Rooms {
      *
      * @return roomId
      */
-    private int generateRoomId() {
+    public int generateRoomId() {
         Random rand = new Random();
         int roomId;
         do {
@@ -48,24 +48,6 @@ public class Rooms {
     }
 
     /**
-     * Leaves current room if in on
-     *
-     * @return boolean
-     */
-    public boolean leaveRoom(GreetServerClientHandler client) { // TODO CLose room if empty
-        int clientId = client.getRoomId();;
-        if (clientId == 0) {
-            return false;
-        } else {
-            Room room = this.getRoomFromList(clientId);
-            openRooms.remove(room);
-
-            client.room = 0;
-            return true;
-        }
-    }
-
-    /**
      * Uses parameter 'roomId' to join an existing room.
      *
      * @param client Client who wants to join a room.
@@ -78,6 +60,28 @@ public class Rooms {
             }
         }
         return false;
+    }
+
+    /**
+     * Leaves current room if in on
+     *
+     * @return boolean
+     */
+    public boolean leaveRoom(GreetServerClientHandler client) {
+        int clientId = client.getRoomId();;
+        if (clientId == 0) {
+            return false;
+        } else {
+            Room room = this.getRoomFromList(clientId);
+            openRooms.remove(room);
+
+            if (room.isEmpty()) {
+                openRooms.remove(room);
+            }
+
+            client.room = 0;
+            return true;
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package firstTest;
+package server;
 
 import java.net.*;
 import java.lang.Thread;

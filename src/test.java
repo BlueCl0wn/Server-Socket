@@ -1,4 +1,4 @@
-import firstTest.*;
+import server.*;
 
 public class test {
     static GreetServerClientHandler[] clients;

@@ -1,6 +1,6 @@
 package rooms;
 
-import firstTest.GreetServerClientHandler;
+import server.GreetServerClientHandler;
 
 /**
  * @author Darek Petersen
@@ -51,13 +51,13 @@ public class Room {
      * @param c     Client
      * @return boolean
      */
-    public static int contains(final GreetServerClientHandler[] array, final GreetServerClientHandler c) {
+    public static int posOfElementInArray(final GreetServerClientHandler[] array, final GreetServerClientHandler c) throws Exception {
         for (int i = 0; i < array.length; i++) {
             if (array[i] == c) {
                 return i;
             }
         }
-        return -1;
+        throw new Exception("Element not found in array.");
     }
 
     public boolean addClient(GreetServerClientHandler client) {
@@ -72,13 +72,10 @@ public class Room {
         return false;
     }
 
-    public boolean removeClient(GreetServerClientHandler client) { // TODO erst schließen, wenn wirklich leer
-        int pos = contains(clients, client);
-        if (pos >= 0) {
-            clients[pos] = null;
-            return true;
-        } else {
-            return false;
+    public void removeClient(GreetServerClientHandler client) throws Exception {
+        int pos = posOfElementInArray(clients, client);
+        if (pos >= 0 & pos < 3) {
+            this.clients[pos] = null;
         }
     }
 
@@ -98,7 +95,6 @@ public class Room {
      *
      * @return Hashcode
      */
-    @Override
     public int hashCode() {
         final int prime = 31;
         return prime + this.id;
@@ -111,7 +107,6 @@ public class Room {
      * @param obj Other Room instance
      * @return boolean
      */
-    @Override
     public boolean equals(final Object obj) {
         if (this == obj)
             return true;
@@ -127,14 +122,15 @@ public class Room {
         }
     }
 
-    public boolean isEmpty() { // TODO get it done!
-        public boolean _isEmpty;
+    /**
+     *
+     */
+    public boolean isEmpty() {
         for (GreetServerClientHandler c : clients) {
-            if ( c == null) {
-                _isEmpty = true;
+            if (c == null) {
+                return true;
             }
         }
-        _isEmpty = false;
-        return _isEmpty;
+        return false;
     }
 }

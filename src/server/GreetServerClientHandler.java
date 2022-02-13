@@ -1,4 +1,4 @@
-package firstTest;
+package server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,7 +19,6 @@ public class GreetServerClientHandler extends Thread{
         this.clientSocket = socket;
         this.Rooms = Rooms;
     }
-
 
     /**
      * Allows class to be used with Thread.
@@ -61,6 +60,7 @@ public class GreetServerClientHandler extends Thread{
                             int roomId = Integer.parseInt(inputLine.substring(10)); // TODO Add method to check for valid roomId.
                             this.joinRoom(roomId);
                         } else {
+                            this.sendToRoom(inputLine);
                             out.println("I cannot understand your gibberish.");
                         }
                     }
@@ -120,7 +120,6 @@ public class GreetServerClientHandler extends Thread{
         }
     }
 
-
     /**
      * Close all connections and client-socket
      */
@@ -142,8 +141,6 @@ public class GreetServerClientHandler extends Thread{
         }
     }
 
-
-
     /**
      * Returns room id.
      * @return int roomId
@@ -163,6 +160,10 @@ public class GreetServerClientHandler extends Thread{
         } else {
             return "You are in room " + this.room;
         }
+    }
+
+    public void sendToRoom(String msg) {
+        // TODO
     }
 
 }
