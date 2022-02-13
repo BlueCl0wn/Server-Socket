@@ -13,16 +13,12 @@ public class Handler {
     GreetServer server = new GreetServer(6667);
     server.start();
 
-    System.out.println("1");
     
     
     GreetClient client = new GreetClient("localhost", 6667);
-    System.out.println("2");
     client.start();
 
-    System.out.println("3");
 
     System.out.println("ended Handler");
-    System.out.println("--------------");
   }
 }
