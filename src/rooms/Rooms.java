@@ -39,12 +39,12 @@ public class Rooms {
      * Creates a new room and assigns 'this' to that room.
      */
     public int createRoom(GreetServerClientHandler client) {
-        if (client.room == 0) {
+        if (client.roomId == 0) {
             int id = generateRoomId();
             openRooms.add(new Room(id, client));
             return id;
         } else {
-            return client.room;
+            return client.roomId;
         }
     }
 
@@ -80,7 +80,7 @@ public class Rooms {
                 openRooms.remove(room);
             }
 
-            client.room = 0;
+            client.roomId = 0;
             return true;
         }
     }

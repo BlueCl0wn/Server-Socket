@@ -2,14 +2,18 @@ package rooms;
 
 import server.GreetServerClientHandler;
 
+import java.util.Observable;
+
 /**
  * @author Darek Petersen
  * @version 1.0
  */
-public class Room {
+public class Room extends Observable {
     public final int id;
 
     public final GreetServerClientHandler[] clients;
+
+    public final String[] messages;
 
     /**
      * Main Constructor
@@ -19,11 +23,15 @@ public class Room {
     public Room(int id, GreetServerClientHandler client1, GreetServerClientHandler client2) {
         this.id = id;
 
+        // initiate client array
         clients = new GreetServerClientHandler[2];
-
-        //
         clients[0] = client1;
         clients[1] = client2;
+
+        // initiate message array
+        messages = new String[2];
+        messages[0] = "";
+        messages[1] = "";
     }
 
     /**
@@ -133,5 +141,44 @@ public class Room {
             }
         }
         return false;
+    }
+
+    /**
+     * Set message variable of room to parsed String.
+     * @param msg Message from client
+     */
+    public void receiveMessage(String msg) {
+        if (this.message.equals("")) {
+            this.message = msg;
+        }
+    }
+
+    /**
+     * Return message variable to asking client.
+     * @return String
+     */
+    public String getMessage() {
+        if (!(this.message.equals(""))) {
+            return this.message;
+        } else {
+            return "No Message found";
+        }
+    }
+
+    /**
+     * Listener
+     * @param msg
+     */
+    public void setSomeVariable(String msg, GreetServerClientHandler c) throws Exception {
+        synchronized (this) {
+            messages[posOfElementInArray(this.clients, c)] = msg;
+        }
+        setChanged();
+        notifyObservers(); // TODO get done
+    }
+
+    public void sendMessage(String msg, GreetServerClientHandler c) throws Exception {
+        messages[posOfElementInArray(this.clients, c)] = msg:
+        }
     }
 }
