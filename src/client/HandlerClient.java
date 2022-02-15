@@ -15,7 +15,7 @@ public class HandlerClient {
         System.out.println("started HandlerClient1");
 
 
-        GreetClient client1 = new GreetClient("10.9.0.115", 51128);
+        GreetClient client1 = new GreetClient("localhost", 51880);
         client1.start();
 
 

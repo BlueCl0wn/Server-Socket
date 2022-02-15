@@ -68,13 +68,15 @@ public class Rooms {
      *
      * @return boolean
      */
-    public boolean leaveRoom(GreetServerClientHandler client) {
-        int clientId = client.getRoomId();;
+    public boolean leaveRoom(GreetServerClientHandler client) throws Exception {
+        int clientId = client.getRoomId();
         if (clientId == 0) {
+            // TODO remove client from room
             return false;
         } else {
             Room room = this.getRoomFromList(clientId);
-            openRooms.remove(room);
+            int pos = getRoomIndex(clientId);
+            openRooms.remove(pos).removeClient(client);
 
             if (room.isEmpty()) {
                 openRooms.remove(room);
@@ -97,5 +99,14 @@ public class Rooms {
             }
         }
         return null;
+    }
+
+    public int getRoomIndex(int roomId) {
+        for (int i = 0; i < this.openRooms.size(); i++) {
+            if (this.openRooms.get(i).id == roomId) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

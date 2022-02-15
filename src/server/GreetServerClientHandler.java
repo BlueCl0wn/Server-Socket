@@ -1,6 +1,7 @@
 package server;
 
 // Communication with client device
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 // Event Handling
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,6 +37,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
     /**
      * Main Constructor
+     *
      * @param socket
      * @param Rooms
      */
@@ -52,6 +55,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
 
     }
+
 
     /**
      * Allows class to be used with Thread.
@@ -74,21 +78,44 @@ public class GreetServerClientHandler extends Thread implements Observer {
                         this.stopConnection();
                         return false;
                     }
-                    case "CREATE ROOM" ->
-                            this.createRoom();
-                    case "LEAVE ROOM" ->
-                            this.leaveRoom(this);
-                    case "START GAME" ->
-                            // TODO start game method
-                            out.println("coming soon");
-                    case "CURRENT ROOM" ->
-                            out.println(this.getCurrentRoomId());
+                    case "CREATE ROOM" -> {
+                        this.createRoom();
+                        out.println(".");
+                    }
+                    case "LEAVE ROOM" -> {
+                        this.leaveRoom(this);
+                        out.println(".");
+                    }
+                    case "START GAME" -> {
+                        // TODO start game method
+                        out.println("coming soon");
+                        out.println(".");
+                    }
+                    case "CURRENT ROOM" -> {
+                        out.println(this.getCurrentRoomId());
+                        out.println(".");
+                    }
                     case "Hello World!" -> {
                         System.out.println(inputLine);
                         out.println("Hello World to you as well, my dear friend!");
+                        out.println(".");
                     }
-                    case "GET MESSAGE" ->
-                            out.println(this.getFromRoom());
+                    case "GET MESSAGE" -> {
+                        out.println(this.getFromRoom());
+                        out.println(".");
+                    }
+                    case "GET MEMBERS" -> {
+                        out.println(Arrays.toString(this.getMembers()));
+                        out.println(".");
+                    }
+                    case "COUNT MEMBERS" -> {
+                        out.println(this.countMembers());
+                        out.println(".");
+                    }
+                    case "." -> {
+                        out.println("This message is not allowed");
+                        out.println(".");
+                    }
                     default -> {
                         if (inputLine.startsWith("JOIN ROOM")) {
                             // Join room with id from string
@@ -104,14 +131,34 @@ public class GreetServerClientHandler extends Thread implements Observer {
                         } else {
                             // Unknown Command
                             out.println("Error: unknown command");
+                            out.println(".");
                         }
                     }
                 }
             }
-        } catch (Exception e) {
+
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private GreetServerClientHandler[] getMembers() {
+        if (this.roomId != 0) {
+            return this.room.getMembers();
+        } else {
+            return new GreetServerClientHandler[2];
+        }
+
+    }
+
+    private int countMembers() {
+        if (this.roomId != 0) {
+            return this.room.countMembers();
+        } else {
+            return -1;
+        }
     }
 
 
@@ -129,17 +176,19 @@ public class GreetServerClientHandler extends Thread implements Observer {
                 out.println("You have been moved to room " + id + ".");
                 this.roomId = id;
                 this.room = this.Rooms.getRoomFromList(roomId);
-                this.room.addObserver(this);
             }
         } else {
             out.println("You are already in room " + this.roomId + ".");
         }
+
+        // Over
+        out.println(".");
     }
 
     /**
      * Leaves current room if in on
      */
-    public void leaveRoom(GreetServerClientHandler client) {
+    public void leaveRoom(GreetServerClientHandler client) throws Exception {
         if (this.Rooms.leaveRoom(client)) {
             this.roomId = 0;
             out.println("You successfully left your room.");
@@ -147,6 +196,8 @@ public class GreetServerClientHandler extends Thread implements Observer {
             out.println("There was an error while trying to leave the room. " +
                     "You are probably not assigned to a room and therefore cannot leave one.");
         }
+        // Over
+        out.println(".");
     }
 
     /**
@@ -158,13 +209,14 @@ public class GreetServerClientHandler extends Thread implements Observer {
         if (this.Rooms.joinRoom(this, roomId)) {
             this.roomId = roomId;
             this.room = this.Rooms.getRoomFromList(roomId);
-            this.room.addObserver(this);
             out.println("You have successfully joined room " + this.roomId);
 
         } else {
             out.println("There was an error while connecting to room " + roomId + ". " +
                     "This room does either not currently exist or you have already join it. ");
         }
+        // Over
+        out.println(".");
     }
 
     /**
@@ -174,6 +226,10 @@ public class GreetServerClientHandler extends Thread implements Observer {
         out.println("bye");
         try {
             this.leaveRoom(this); // Leave room if necessary
+
+            // send STOP
+            out.println("STOP");
+            out.println(".");
 
             // Close communication channels
             in.close();
@@ -204,7 +260,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
      * @return String
      */
     public String getCurrentRoomId() {
-        if (this.roomId== 0) {
+        if (this.roomId == 0) {
             return "You are not connected to a room";
         } else {
             return "You are in room " + this.roomId;
@@ -213,14 +269,17 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
     /**
      * Send message to room
+     *
      * @param msg
      */
-    public void sendToRoom(String msg) {
+    public void sendToRoom(String msg) throws Exception {
         this.room.receiveMessage(msg);
+        this.room.receiveMessage(".");
     }
 
     /**
      * Gets a message form current room
+     *
      * @return String
      */
     public String getFromRoom() {
@@ -230,6 +289,6 @@ public class GreetServerClientHandler extends Thread implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         String msg = ((rooms.Room) o).getMessage();
-        out.println(msg);
+        out.println(msg); //TODO Scanner is blocking Observer
     }
 }

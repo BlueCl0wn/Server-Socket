@@ -17,7 +17,7 @@ public class HandlerClient2 {
 
         //server.start();
 
-        GreetClient client1 = new GreetClient("10.9.0.115", 51128);
+        GreetClient client1 = new GreetClient("localhost", 51880);
         client1.start();
 
         //GreetClient client2 = new GreetClient("localhost", 6667);

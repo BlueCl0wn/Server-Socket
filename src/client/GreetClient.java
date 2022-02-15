@@ -80,7 +80,7 @@ public class GreetClient extends Thread {
     /**
      * basically a main loop
      */
-    public void startTransmission() {
+    public void startTransmission(){
         System.out.println("started client");
 
         String text;
@@ -98,26 +98,26 @@ public class GreetClient extends Thread {
      * @param msg String that is to be sent to ServerSocket
      * @return String of servers answer
      */
-    public boolean sendMessage(String msg) {
+    public boolean sendMessage(String msg){
         try {
             out.println(msg);
 
-            String answer = in.readLine();
-            switch (answer) {
-                case "STOP" -> {
-                    System.out.println("Recipient closed connection.");
-                    out.println("STOP");
-                    this.stopConnection();
-                    return false;
-                }
-                case "" -> {
-                    System.out.println("Answer loop ended");
-                    return true;
-                }
-                default -> {
-                    System.out.print("Answer: ");
-                    System.out.println(answer);
-                    return true;
+            String answer;
+            while (!((answer = in.readLine()).equals("3.141592653589"))) {
+                switch (answer) {
+                    case "STOP" -> {
+                        System.out.println("Recipient closed connection.");
+                        out.println("STOP");
+                        this.stopConnection();
+                        return false;
+                    }
+                    case "." -> {
+                        return true;
+                    }
+                    default -> {
+                        System.out.print("Answer: ");
+                        System.out.println(answer);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -125,6 +125,7 @@ public class GreetClient extends Thread {
             System.out.println( "Try/Catch ERROR in 'sendMessage'");
             return true;
         }
+        return false;
     }
 
     /**

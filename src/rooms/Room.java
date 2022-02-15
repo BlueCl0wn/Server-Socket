@@ -13,7 +13,7 @@ public class Room extends Observable {
 
     public final GreetServerClientHandler[] clients;
 
-    public final String[] messages;
+    public String message;
 
     /**
      * Main Constructor
@@ -28,10 +28,13 @@ public class Room extends Observable {
         clients[0] = client1;
         clients[1] = client2;
 
-        // initiate message array
-        messages = new String[2];
-        messages[0] = "";
-        messages[1] = "";
+
+        if (client1 != null) {
+            this.addObserver(client1);
+        }
+        if (client2 != null) {
+            this.addObserver(client2);
+        }
     }
 
     /**
@@ -45,7 +48,6 @@ public class Room extends Observable {
 
     /**
      * Main Constructor
-     *
      * @param id roomID of this room
      */
     public Room(int id) {
@@ -73,6 +75,7 @@ public class Room extends Observable {
         for (GreetServerClientHandler c : clients) {
             if (c == null) {
                 clients[1] = client;
+                this.addObserver(client);
                 return true;
             } else if (c == client) {
                 return false;
@@ -85,6 +88,7 @@ public class Room extends Observable {
         int pos = posOfElementInArray(clients, client);
         if (pos >= 0 & pos < 3) {
             this.clients[pos] = null;
+            this.deleteObserver(client);
         }
     }
 
@@ -144,16 +148,6 @@ public class Room extends Observable {
     }
 
     /**
-     * Set message variable of room to parsed String.
-     * @param msg Message from client
-     */
-    public void receiveMessage(String msg) {
-        if (this.message.equals("")) {
-            this.message = msg;
-        }
-    }
-
-    /**
      * Return message variable to asking client.
      * @return String
      */
@@ -169,16 +163,26 @@ public class Room extends Observable {
      * Listener
      * @param msg
      */
-    public void setSomeVariable(String msg, GreetServerClientHandler c) throws Exception {
+    public void receiveMessage(String msg) throws Exception {
         synchronized (this) {
-            messages[posOfElementInArray(this.clients, c)] = msg;
+            this.message = msg;
         }
         setChanged();
         notifyObservers(); // TODO get done
     }
 
-    public void sendMessage(String msg, GreetServerClientHandler c) throws Exception {
-        messages[posOfElementInArray(this.clients, c)] = msg:
+    public GreetServerClientHandler[] getMembers() {
+        return clients;
+    }
+
+    public int countMembers() {
+        int counter = 0;
+        for (GreetServerClientHandler c : clients) {
+            if (c != null) {
+                counter++;
+            }
         }
+        return counter;
     }
 }
+
