@@ -40,7 +40,7 @@ public class Rooms {
      */
     public int createRoom(GreetServerClientHandler client) {
         if (client.roomId == 0) {
-            int id = generateRoomId();
+            int id = this.generateRoomId();
             openRooms.add(new Room(id, client));
             return id;
         } else {
@@ -71,7 +71,6 @@ public class Rooms {
     public boolean leaveRoom(GreetServerClientHandler client) throws Exception {
         int clientId = client.getRoomId();
         if (clientId == 0) {
-            // TODO remove client from room
             return false;
         } else {
             Room room = this.getRoomFromList(clientId);

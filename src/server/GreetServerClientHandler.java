@@ -38,8 +38,8 @@ public class GreetServerClientHandler extends Thread implements Observer {
     /**
      * Main Constructor
      *
-     * @param socket
-     * @param Rooms
+     * @param socket clients socket
+     * @param Rooms instance if rooms.Rooms for room management
      */
     public GreetServerClientHandler(Socket socket, rooms.Rooms Rooms) {
         this.clientSocket = socket;
@@ -67,7 +67,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
     /**
      * Basically a main loop
      */
-    public boolean communicate() {
+    public void communicate() {
         try {
 
             // Main-Loop for this client on server-side
@@ -76,7 +76,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
                 switch (inputLine) {
                     case "STOP" -> {
                         this.stopConnection();
-                        return false;
+                        return;
                     }
                     case "CREATE ROOM" -> {
                         this.createRoom();
@@ -120,8 +120,14 @@ public class GreetServerClientHandler extends Thread implements Observer {
                         if (inputLine.startsWith("JOIN ROOM")) {
                             // Join room with id from string
                             // Outside switch-statement because it does no support '.startWith()'.
-                            int roomId = Integer.parseInt(inputLine.substring(10)); // TODO Add method to check for valid roomId.
-                            this.joinRoom(roomId);
+                            String roomIdString = inputLine.substring(10);
+                            if (isValidRoomIdString(roomIdString)) {
+                                this.joinRoom(Integer.parseInt(roomIdString));
+                            } else {
+                                out.println("This is not a valid room ID or wrong command syntax." +
+                                        "Correct: JOIN ROOM <roomId> ");
+                                out.println(".");
+                            }
 
                         } else if (this.roomId != 0) {
                             // If protocol doesn't recognise command and 'this' is connected to a room,
@@ -141,9 +147,23 @@ public class GreetServerClientHandler extends Thread implements Observer {
                 Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
+    /**
+     * Check if string only contains ints and length is maximum 4 long.
+     * Requirements for valid roomId.
+     * @param roomId String of roomId
+     * @return boolean
+     */
+    private boolean isValidRoomIdString(String roomId) {
+        return roomId.matches("[0-9]+") && roomId.length() <= 4;
+    }
+
+    /**
+     * Return array of members if current room
+     * If not in room returns null array
+     * @return GreetServerClientHandler[]
+     */
     private GreetServerClientHandler[] getMembers() {
         if (this.roomId != 0) {
             return this.room.getMembers();
@@ -153,6 +173,10 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
     }
 
+    /**
+     * Gives number of clients in current room
+     * @return int
+     */
     private int countMembers() {
         if (this.roomId != 0) {
             return this.room.countMembers();
@@ -160,7 +184,6 @@ public class GreetServerClientHandler extends Thread implements Observer {
             return -1;
         }
     }
-
 
     /**
      * Creates a new room and assigns 'this' to that room.
@@ -270,9 +293,9 @@ public class GreetServerClientHandler extends Thread implements Observer {
     /**
      * Send message to room
      *
-     * @param msg
+     * @param msg String send to room
      */
-    public void sendToRoom(String msg) throws Exception {
+    public void sendToRoom(String msg){
         this.room.receiveMessage(msg);
         this.room.receiveMessage(".");
     }
@@ -289,6 +312,6 @@ public class GreetServerClientHandler extends Thread implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         String msg = ((rooms.Room) o).getMessage();
-        out.println(msg); //TODO Scanner is blocking Observer
+        out.println(msg);
     }
 }

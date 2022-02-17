@@ -1,9 +1,5 @@
 package client;
 
-import server.GreetServer;
-
-
-
 /**
  * @author Darek Petersen
  * @version 1.0

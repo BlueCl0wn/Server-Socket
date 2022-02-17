@@ -160,15 +160,16 @@ public class Room extends Observable {
     }
 
     /**
-     * Listener
-     * @param msg
+     * Receive message from client
+     * Notifies all Observers
+     * @param msg String from client
      */
-    public void receiveMessage(String msg) throws Exception {
+    public void receiveMessage(String msg){
         synchronized (this) {
             this.message = msg;
         }
         setChanged();
-        notifyObservers(); // TODO get done
+        notifyObservers();
     }
 
     public GreetServerClientHandler[] getMembers() {

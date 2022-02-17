@@ -1,5 +1,3 @@
-import client.GreetClient;
-
 /**
  * @author Darek Petersen
  * @version 1.0
@@ -15,7 +13,6 @@ public class HandlerServer {
 
         Rooms = new rooms.Rooms();
         server = new server.GreetServer(Rooms);
-        server.port = server.port;
 
         server.start();
 
