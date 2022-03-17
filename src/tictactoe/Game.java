@@ -50,6 +50,9 @@ public class Game extends JPanel implements ActionListener {
         running = true;
     }
 
+    /**
+     * TODO finish 'startGame()' and its javadoc
+     */
     private void startGame() {
     }
 

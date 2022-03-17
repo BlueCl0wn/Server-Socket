@@ -13,10 +13,10 @@ public class Field extends JPanel{
     public int y;
     public int width;
 
-    public Color color;
+    private Color color;
 
     // 0 == Null ; 1 == cross ; 2 ==  circle
-    int status;
+    public int status;
 
     /**
      * main constructor
@@ -28,10 +28,11 @@ public class Field extends JPanel{
         this.x = x;
         this.y = y;
         this.width = width;
+        this.color = Color.WHITE;
 
         setPreferredSize(new Dimension(width, width));
         setFocusable(true);
-        setBackground(Color.WHITE);
+        setBackground(this.color);
     }
 
 
@@ -73,7 +74,7 @@ public class Field extends JPanel{
      */
     public void reset() {
         this.status = 0;
-        setBackground(Color.WHITE);
+        setBackground(this.color);
     }
 
     /**
