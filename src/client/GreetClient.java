@@ -54,10 +54,17 @@ public class GreetClient extends Thread {
     }
 
     /**
-     * Constructor 1
+     * Constructor with only ip
+     */
+    public GreetClient(String ip) {
+        this(ip, 0, 0);
+    }
+
+    /**
+     * Constructor without anything
      */
     public GreetClient() {
-        this("localhost", 6666, 0);
+        this("localhost", 0, 0);
     }
 
     /**

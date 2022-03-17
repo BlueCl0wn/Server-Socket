@@ -1,4 +1,4 @@
-package tictactoe;
+package game.panes.tictactoe;
 
 import javax.swing.*;
 import java.awt.*;

@@ -20,7 +20,7 @@ public class Test {
 
         // Hier setzen wir die Hintergrundfarben für die JPanels
         game.setBackground(Color.RED);
-        game.add(new JLabel("tictactoe"));
+        game.add(new JLabel("game"));
 
         chat.setBackground(Color.BLUE);
         chat.add(new JLabel("Here you can chat with your room member"));

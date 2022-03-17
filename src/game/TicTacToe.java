@@ -1,17 +1,17 @@
-package tictactoe;
+package game;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * @author Darek Petersen
- * @version 1.0
+ * @version 1.1
  */
 public class TicTacToe extends JFrame {
     public TicTacToe() {
-        add(new Game());
-        setResizable(false);
+        // add(new Game());
+        add(new SplitPane());
+        setResizable(true);
         pack();
 
         setTitle("TicTacToe");

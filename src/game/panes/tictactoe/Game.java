@@ -1,14 +1,15 @@
-package tictactoe;
+package game.panes.tictactoe;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
- * Class representing the TicTacToe board.
  * @author Darek Petersen
- * @version 1.0
+ * @version 2.0
  */
-public class Board extends JPanel{
+public class Game extends JPanel implements ActionListener {
     // Information about the board for easy acces.
     private final int fieldWidth;
     private final int lineWidth;
@@ -32,24 +33,35 @@ public class Board extends JPanel{
     // saved in one array for easier access.
     public Field[][] rows;
 
+    // Timer
+    private final Timer timer;
+
+    // indicates if game is over or still running
+    private boolean running;
+
     /**
      * main constructor
-     * @param fieldWidth width and height of the fields
-     * @param lineWidth size of the gaps between the fields
      */
-    public Board(int fieldWidth, int lineWidth) {
-        this.fieldWidth = fieldWidth;
-        this.lineWidth = lineWidth;
+    public Game() {
+        this.fieldWidth = 100;
+        this.lineWidth = 5;
         this.totalWidth = 4 * lineWidth + 3 * fieldWidth;
+
+        addKeyListener(new SelectListener(this));
+        setPreferredSize(new Dimension(this.totalWidth, this.totalWidth));
+        setFocusable(true);
+
+        running = true;
+
+        timer = new Timer(200, this);
+        timer.start();
 
         // initiate current player
         currentPlayer = 1;
 
         setBackground(Color.BLACK);
-       // this.getContentPane().setLayout(null);
+        // this.getContentPane().setLayout(null);
 
-
-        setPreferredSize(new Dimension(this.totalWidth, this.totalWidth));
 
         // Create board with all nine Fields
         board = new Field[3][3];
@@ -76,6 +88,8 @@ public class Board extends JPanel{
         row7 = new Field[] {board[0][0], board[1][1], board[2][2]}; // /
         row8 = new Field[] {board[0][2], board[1][1], board[2][0]}; // \
         rows = new Field[][] {row1, row2, row3, row4, row5, row6, row7, row8};
+
+       // startGame();
     }
 
     /**
@@ -83,7 +97,7 @@ public class Board extends JPanel{
      * @param f field ID
      * @return The field itself
      */
-    public static Field getField(int f) {
+    public Field getField(int f) {
         System.out.println(f);
 
         // Row will be set to 2 minus the rounded amount of times 3 fits into f.
@@ -97,7 +111,7 @@ public class Board extends JPanel{
         System.out.println("column: " + column);
 
         // Return field.
-        return board[row][column];
+        return this.board[row][column];
     }
 
     /**
@@ -105,7 +119,7 @@ public class Board extends JPanel{
      * @param f Field number
      * @return Boolean showing whether the field is empty (true) or occupied (false).
      */
-    public static boolean isFieldFree(int f) {
+    public boolean isFieldFree(int f) {
         // Makes sure f has  correct magnitude.
         if (f < 1 || f > 9) {
             System.out.println("This Field does not exist.");
@@ -119,15 +133,17 @@ public class Board extends JPanel{
      * Assign a field to a player
      * @param f field number
      */
-    public static void pickField(int f) {
-        getField(f).pick(currentPlayer);
-        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+    public void pickField(int f) {
+        if (this.running) {
+            getField(f).pick(currentPlayer);
+            currentPlayer = (currentPlayer == 1) ? 2 : 1;
+        }
     }
 
     /**
      * Reset whole board to empty.
      */
-    public static void resetBoard() {
+    public void resetBoard() {
         for (Field[] row : board) {
             for (Field field : row) {
                 field.reset();
@@ -150,5 +166,67 @@ public class Board extends JPanel{
         }
         return true;
     }
-}
 
+    /**
+     * Resets game for a new round of freshly harvested TicTacToe.
+     */
+    public void resetGame() {
+        this.resetBoard();
+        running = true;
+    }
+
+    /**
+     * TODO finish 'startGame()' and its javadoc
+     */
+    private void startGame() {
+    }
+
+    /**
+     * main loop action
+     * @param e Event
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (running) {
+            this.checkForWinner();
+        }
+        repaint();
+    }
+
+    /**
+     * Check if someone won the round.
+     * Reassign field 'running' accordingly.
+     */
+    private void checkForWinner() {
+        this.running = this.checkIfStillPlaying();
+    }
+
+    /**
+     * TODO Fill javadoc
+     */
+    public void stopGame() {
+        this.running = false;
+    }
+
+    /**
+     * TODO fill javadoc
+     * @param g graphic
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (running) {
+
+            Toolkit.getDefaultToolkit().sync();
+            //brett.draw(g);
+        } else {
+            Font f = new Font("Calibri", Font.BOLD, 16);
+            FontMetrics metrics = getFontMetrics(f);
+
+            g.setColor(Color.lightGray);
+            g.setFont(f);
+            g.drawString("Game Over!", (this.totalWidth - metrics.stringWidth("Game Over - You died, noob!")),
+                    this.totalWidth/2);
+        }
+    }
+}
