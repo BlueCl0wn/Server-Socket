@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 
 /**
  * @author Darek Petersen
@@ -197,8 +198,10 @@ public class Game extends JPanel implements ActionListener {
      * Check if someone won the round.
      * Reassign field 'running' accordingly.
      */
-    private void checkForWinner() {
-        this.running = this.checkIfStillPlaying();
+    public void checkForWinner() {
+        if (running) {
+            this.running = this.checkIfStillPlaying();
+        }
     }
 
     /**
