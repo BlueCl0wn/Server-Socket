@@ -58,6 +58,8 @@ public class GreetClient extends Thread {
      */
     public GreetClient(String ip) {
         this(ip, 0, 0);
+        // TODO add actionPerformed-method for receiving e message that can be parsed through the constructor.
+        // the method should call games pickField method
     }
 
     /**

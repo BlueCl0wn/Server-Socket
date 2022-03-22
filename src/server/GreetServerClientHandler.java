@@ -128,7 +128,6 @@ public class GreetServerClientHandler extends Thread implements Observer {
                                         "Correct: JOIN ROOM <roomId> ");
                                 out.println(".");
                             }
-
                         } else if (this.roomId != 0) {
                             // If protocol doesn't recognise command and 'this' is connected to a room,
                             // then send message to room.
@@ -136,7 +135,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
                         } else {
                             // Unknown Command
-                            out.println("Error: unknown command");
+                            out.println("Error: unknown command and/or not connected to a room.");
                             out.println(".");
                         }
                     }

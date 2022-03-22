@@ -1,5 +1,7 @@
 package game.panes.tictactoe;
 
+import game.TicTacToe;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -137,6 +139,7 @@ public class Game extends JPanel implements ActionListener {
     public void pickField(int f) {
         if (this.running) {
             getField(f).pick(currentPlayer);
+            TicTacToe.client.sendMessage("GAME " + currentPlayer + " " + f);
             currentPlayer = (currentPlayer == 1) ? 2 : 1;
         }
     }
@@ -174,12 +177,6 @@ public class Game extends JPanel implements ActionListener {
     public void resetGame() {
         this.resetBoard();
         running = true;
-    }
-
-    /**
-     * TODO finish 'startGame()' and its javadoc
-     */
-    private void startGame() {
     }
 
     /**

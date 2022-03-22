@@ -1,5 +1,7 @@
 package game;
 
+import client.GreetClient;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,7 +10,11 @@ import java.awt.*;
  * @version 1.1
  */
 public class TicTacToe extends JFrame {
+    public static GreetClient client;
+
     public TicTacToe() {
+        client = new GreetClient("localhost", 51621, 0);
+
         // add(new Game());
         add(new SplitPane());
         setResizable(true);
