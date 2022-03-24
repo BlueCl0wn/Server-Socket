@@ -1,5 +1,7 @@
 package client;
 
+import game.panes.tictactoe.Game;
+
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -25,9 +27,41 @@ public class GreetClient extends Thread {
 
     // input
     private final Scanner scanner;
+    private Game game;
+
+
+    private String msg;
 
     /**
      * Main-Constructor
+     *
+     * @param ip   ip to connect to
+     * @param port port on which to connect
+     * @param id   ClientSockets id. For recognition
+     */
+    public GreetClient(String ip, int port, int id, Game game) {
+        this.ip = ip;
+        this.port = port;
+        this.id = id;
+        this.game = game;
+
+        // instantiates scanner
+        this.scanner = new Scanner(System.in);
+
+        try {
+            // create socket
+            clientSocket = new Socket(ip, port);
+
+            // create input and output for communication with recipient
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Constructor
      *
      * @param ip   ip to connect to
      * @param port port on which to connect
@@ -58,15 +92,17 @@ public class GreetClient extends Thread {
      */
     public GreetClient(String ip) {
         this(ip, 0, 0);
-        // TODO add actionPerformed-method for receiving e message that can be parsed through the constructor.
-        // the method should call games pickField method
+    }
+
+    public void actionPerformed(int f, int player) {
+        this.game.pickField(f);
     }
 
     /**
      * Constructor without anything
      */
     public GreetClient() {
-        this("localhost", 0, 0);
+        this("localhost", 0, 0, null);
     }
 
     /**
@@ -89,16 +125,59 @@ public class GreetClient extends Thread {
     /**
      * basically a main loop
      */
-    public void startTransmission(){
+    public void startOneTransmission(){
         System.out.println("started client");
 
         String text;
         do {
             text = this.getUserMessage();
 
-        } while (this.sendMessage(text));
+        } while (this.sendOneMessage(text));
 
         stopConnection();
+    }
+
+    public void startTransmission() {
+        while (true) {
+            if (receiveMessage()) {
+                break;
+            }
+            if (msg != null) {
+                out.println();
+                msg = null;;
+            }
+        }
+    }
+
+    /**
+     * Receive messages and print them
+     */
+    private boolean receiveMessage() {
+        try {
+            String answer;
+            while (!((answer = in.readLine()).equals("3.141592653589"))) {
+                switch (answer) {
+                    case "STOP" -> {
+                        System.out.println("Recipient closed connection.");
+                        out.println("STOP");
+                        this.stopConnection();
+                        return false;
+                    }
+                    case "." -> {
+                        return true;
+                    }
+                    default -> {
+                        System.out.print("Answer: ");
+                        System.out.println(answer);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println( "Try/Catch ERROR in 'sendMessage'");
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -107,7 +186,7 @@ public class GreetClient extends Thread {
      * @param msg String that is to be sent to ServerSocket
      * @return String of servers answer
      */
-    public boolean sendMessage(String msg){
+    public boolean sendOneMessage(String msg){ // TODO sendMEssage should only send one message end end afterward.
         try {
             out.println(msg);
 
@@ -135,6 +214,13 @@ public class GreetClient extends Thread {
             return true;
         }
         return false;
+    }
+
+    /**
+     * send a message to server.
+     */
+    public void sendMessage(String msg) {
+        this.msg = msg; // :)
     }
 
     /**

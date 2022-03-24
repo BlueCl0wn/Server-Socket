@@ -39,6 +39,4 @@ public class Console extends JPanel {
         add(button);
 
     }
-    // TODO start doing console.
-    // will be necessary for all other tabs
 }
