@@ -20,7 +20,9 @@ public class SelectListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
-        System.out.println("keyPressed has been called");
+
+        //    System.out.println("called SelectListener");
+
         int key_id = e.getKeyCode();
 
         if (key_id == KeyEvent.VK_NUMPAD1 && this.game.isFieldFree(1)) {
@@ -56,6 +58,5 @@ public class SelectListener extends KeyAdapter {
         if (key_id == KeyEvent.VK_R) {
             this.game.resetGame();
         }
-        System.out.println("keyPressed is done");
     }
 }

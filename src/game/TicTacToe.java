@@ -12,11 +12,16 @@ import java.awt.*;
 public class TicTacToe extends JFrame {
     public static GreetClient client;
 
+    public SplitPane SP;
+
     public TicTacToe() {
-        client = new GreetClient("localhost", 51621, 0);
+        this.SP = new SplitPane();
+
+        client = new GreetClient("localhost", 64015, 0, this.SP);
+        client.start();
 
         // add(new Game());
-        add(new SplitPane());
+        add(this.SP);
         setResizable(true);
         pack();
 

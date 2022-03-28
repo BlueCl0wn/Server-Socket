@@ -132,9 +132,11 @@ public class GreetServerClientHandler extends Thread implements Observer {
                             // If protocol doesn't recognise command and 'this' is connected to a room,
                             // then send message to room.
                             this.sendToRoom(inputLine);
+                            System.out.println(inputLine);
 
                         } else {
                             // Unknown Command
+                            System.out.println(inputLine);
                             out.println("Error: unknown command and/or not connected to a room.");
                             out.println(".");
                         }

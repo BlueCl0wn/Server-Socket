@@ -8,7 +8,7 @@ public class HandlerClient2 {
     public static void main(String[] args) {
         System.out.println("started HandlerClient2");
 
-        GreetClient client2 = new GreetClient("localhost", 51880);
+        GreetClient client2 = new GreetClient("localhost", 61438);
         client2.start();
 
 

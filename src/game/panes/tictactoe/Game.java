@@ -24,6 +24,8 @@ public class Game extends JPanel implements ActionListener {
     // Current player stored with an according ID
     public static int currentPlayer;
 
+    public int playerID;
+
     // All possible combinations by which one can win...
     public Field[] row1; // ---
     public Field[] row2; // ---
@@ -62,6 +64,7 @@ public class Game extends JPanel implements ActionListener {
         // initiate current player
         currentPlayer = 1;
 
+
         setBackground(Color.BLACK);
         // this.getContentPane().setLayout(null);
 
@@ -91,8 +94,6 @@ public class Game extends JPanel implements ActionListener {
         row7 = new Field[] {board[0][0], board[1][1], board[2][2]}; // /
         row8 = new Field[] {board[0][2], board[1][1], board[2][0]}; // \
         rows = new Field[][] {row1, row2, row3, row4, row5, row6, row7, row8};
-
-       // startGame();
     }
 
     /**
@@ -101,17 +102,17 @@ public class Game extends JPanel implements ActionListener {
      * @return The field itself
      */
     public Field getField(int f) {
-        System.out.println(f);
+        //       System.out.println(f);
 
         // Row will be set to 2 minus the rounded amount of times 3 fits into f.
         // (f-1) because otherwise 3/3 would end up being 1 even though it has to equal 0 for the program to work.
         int row = 2 - ((f-1) / 3);
-        System.out.println("row: " + row);
+        //   System.out.println("row: " + row);
 
         // If f%3 == 0 (true for f = {3,6,9}), column will be set to 2.
         // Otherwise, column = (f%3)
         int column = ((f%3 == 0)) ? 2 : (f % 3) - 1;
-        System.out.println("column: " + column);
+        //   System.out.println("column: " + column);
 
         // Return field.
         return this.board[row][column];
@@ -133,14 +134,43 @@ public class Game extends JPanel implements ActionListener {
     }
 
     /**
+     * start game
+     * inform server room about it
+     */
+    public void startGame() {
+        this.running = true;
+        resetBoard();
+       // playerID = // TODO finish 'startGame()'
+
+    }
+
+    /**
      * Assign a field to a player
      * @param f field number
      */
     public void pickField(int f) {
+        //    System.out.println("called 'game.pickField'");
+
         if (this.running) {
             getField(f).pick(currentPlayer);
             TicTacToe.client.sendMessage("GAME " + currentPlayer + " " + f);
             currentPlayer = (currentPlayer == 1) ? 2 : 1;
+        }
+    }
+
+    /**
+     * opponent picked a field and sent infos through room
+     * @param f picked field
+     * @param player playerID of opponent
+     */
+    public void opponentPickedField(int f, int player) {
+        if (this.running) {
+            getField(f).pick(currentPlayer);
+            if (currentPlayer == player) {
+                currentPlayer = (currentPlayer == 1) ? 2 : 1;
+            } else {
+                System.out.println("Error: The player IDs ar not the same.");
+            }
         }
     }
 
@@ -202,14 +232,14 @@ public class Game extends JPanel implements ActionListener {
     }
 
     /**
-     * TODO Fill javadoc
+     * Stop game by setting 'running' to false
      */
     public void stopGame() {
         this.running = false;
     }
 
     /**
-     * TODO fill javadoc
+     * Draw method for the Game
      * @param g graphic
      */
     @Override
@@ -220,6 +250,7 @@ public class Game extends JPanel implements ActionListener {
             Toolkit.getDefaultToolkit().sync();
             //brett.draw(g);
         } else {
+            /*
             Font f = new Font("Calibri", Font.BOLD, 16);
             FontMetrics metrics = getFontMetrics(f);
 
@@ -227,6 +258,10 @@ public class Game extends JPanel implements ActionListener {
             g.setFont(f);
             g.drawString("Game Over!", (this.totalWidth - metrics.stringWidth("Game Over - You died, noob!")),
                     this.totalWidth/2);
+
+             */
         }
     }
+
+    // TODO introduce receive message which handles messages from server Room
 }

@@ -7,8 +7,6 @@ import game.panes.tictactoe.SelectListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Darek Petersen
@@ -22,7 +20,7 @@ public class SplitPane extends JSplitPane {
     public JPanel rightCapsule;
 
     // left side
-    public InteractionWindow left;
+    public InteractionWindow IW;
 
 
     /**
@@ -42,12 +40,28 @@ public class SplitPane extends JSplitPane {
         //rightCapsule.add(tictactoe);
 
         // initiating left side
-        this.left = new InteractionWindow();
+        this.IW = new InteractionWindow();
 
         // setting Container as sides
-        setLeftComponent(this.left);
+        setLeftComponent(this.IW);
         setRightComponent(this.tictactoe);
 
         addKeyListener(new SelectListener(this.tictactoe));
+    }
+
+    public void perfomOnMessageReceive(String msg) {
+        if (msg.startsWith("GAME")) { // Message is directed to game
+
+            // Create Substrings for alter usage
+            int f = Integer.parseInt(msg.substring(5, 6));
+            int player = Integer.parseInt(msg.substring(7, 8));
+            // TODO update in a way that allows multiple commands for 'Game'
+
+            // actually pick field
+            this.tictactoe.opponentPickedField(f, player);
+        } else if (msg.startsWith("IW")) { // message is directed to InteractionWindow
+            // forward to InteractionWindow
+            IW.performOnMessageReceive(msg);
+        }
     }
 }

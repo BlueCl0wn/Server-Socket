@@ -54,8 +54,14 @@ public class Field extends JPanel{
     public void pick(int player) {
         if (player == 1) {
             this.status = 1;
+
+            //     System.out.println("picked field for player: " + player);
+
         } else if (player == 2) {
             this.status = 2;
+
+            //    System.out.println("picked field for player: " + player);
+
         } else {
             System.out.println("This player-id should not exist.");
         }

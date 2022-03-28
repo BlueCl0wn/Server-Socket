@@ -39,4 +39,12 @@ public class Console extends JPanel {
         add(button);
 
     }
+
+    public void send(String msg) {
+        TicTacToe.client.sendMessage(msg);
+    }
+
+    public void receive(String msg) {
+        System.out.println(msg); // TODO add method that changes JTextField in app
+    }
 }

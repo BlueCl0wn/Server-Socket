@@ -1,5 +1,6 @@
 package client;
 
+import game.SplitPane;
 import game.panes.tictactoe.Game;
 
 import java.net.*;
@@ -27,7 +28,7 @@ public class GreetClient extends Thread {
 
     // input
     private final Scanner scanner;
-    private Game game;
+    private SplitPane SP;
 
 
     private String msg;
@@ -39,11 +40,11 @@ public class GreetClient extends Thread {
      * @param port port on which to connect
      * @param id   ClientSockets id. For recognition
      */
-    public GreetClient(String ip, int port, int id, Game game) {
+    public GreetClient(String ip, int port, int id, SplitPane SP) {
         this.ip = ip;
         this.port = port;
         this.id = id;
-        this.game = game;
+        this.SP = SP;
 
         // instantiates scanner
         this.scanner = new Scanner(System.in);
@@ -94,10 +95,6 @@ public class GreetClient extends Thread {
         this(ip, 0, 0);
     }
 
-    public void actionPerformed(int f, int player) {
-        this.game.pickField(f);
-    }
-
     /**
      * Constructor without anything
      */
@@ -119,6 +116,8 @@ public class GreetClient extends Thread {
      * Run-method to allow use with 'Thread'
      */
     public void run() {
+        System.out.println("called run()");
+
         this.startTransmission();
     }
 
@@ -138,15 +137,27 @@ public class GreetClient extends Thread {
     }
 
     public void startTransmission() {
+        System.out.println("started transmission");
+
         while (true) {
+            receiveMessage();
+            //System.out.println("recieved a message");
+            /*
             if (receiveMessage()) {
+            if (receiveMessage()) {
+                System.out.println("recieved a message");
                 break;
             }
-            if (msg != null) {
-                out.println();
-                msg = null;;
+
+             */
+            if (msg != null) { // check if message available
+                out.println(); // send message
+                System.out.println("sent message to server");
+                msg = null; // reset message to null
+
             }
         }
+        //System.out.println("recieved a message");
     }
 
     /**
@@ -156,6 +167,8 @@ public class GreetClient extends Thread {
         try {
             String answer;
             while (!((answer = in.readLine()).equals("3.141592653589"))) {
+                System.out.print("msg: ");
+                System.out.println(answer);
                 switch (answer) {
                     case "STOP" -> {
                         System.out.println("Recipient closed connection.");
@@ -167,9 +180,17 @@ public class GreetClient extends Thread {
                         return true;
                     }
                     default -> {
+                        // TODO comment debug print
                         System.out.print("Answer: ");
                         System.out.println(answer);
+                        SP.perfomOnMessageReceive(answer);
                     }
+                }
+                if (this.msg != null) { // check if message available
+                    out.println(); // send message
+                    System.out.println("sent message to server");
+                    this.msg = null; // reset message to null
+
                 }
             }
         } catch (Exception e) {
@@ -181,12 +202,21 @@ public class GreetClient extends Thread {
     }
 
     /**
+     * send a message to server.
+     */
+    public void sendMessage(String msg) {
+        this.msg = msg; // :)
+        System.out.println(this.msg);
+        System.out.println("stored message in temp variable"); // TODO remove debug print
+    }
+
+    /**
      * Send message to the server
      *
      * @param msg String that is to be sent to ServerSocket
      * @return String of servers answer
      */
-    public boolean sendOneMessage(String msg){ // TODO sendMEssage should only send one message end end afterward.
+    public boolean sendOneMessage(String msg){
         try {
             out.println(msg);
 
@@ -214,13 +244,6 @@ public class GreetClient extends Thread {
             return true;
         }
         return false;
-    }
-
-    /**
-     * send a message to server.
-     */
-    public void sendMessage(String msg) {
-        this.msg = msg; // :)
     }
 
     /**

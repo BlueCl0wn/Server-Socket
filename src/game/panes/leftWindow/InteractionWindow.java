@@ -38,4 +38,19 @@ public class InteractionWindow extends JTabbedPane {
         addTab("Room", this.tabRoom);
     }
 
+    public void performOnMessageReceive(String msg) {
+        tabConsole.receive(msg);
+
+        String subMsg = msg.substring(3);
+
+        if (subMsg.startsWith("CHAT")) {
+            this.tabChat.receive(subMsg.substring(5));
+        } else if (subMsg.startsWith("SETTINGS")) {
+            this.tabSettings.receive(subMsg.substring(9));
+
+        } else if (subMsg.startsWith("ROOM"))
+            this.tabRoom.receive(subMsg.substring(5));
+
+    }
+
 }
