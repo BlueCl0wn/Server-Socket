@@ -1,7 +1,6 @@
 package client;
 
 import game.SplitPane;
-import game.panes.tictactoe.Game;
 
 import java.net.*;
 import java.io.*;
@@ -31,7 +30,7 @@ public class GreetClient extends Thread {
     private SplitPane SP;
 
 
-    private String msg;
+    public String msg;
 
     /**
      * Main-Constructor
@@ -89,20 +88,6 @@ public class GreetClient extends Thread {
     }
 
     /**
-     * Constructor with only ip
-     */
-    public GreetClient(String ip) {
-        this(ip, 0, 0);
-    }
-
-    /**
-     * Constructor without anything
-     */
-    public GreetClient() {
-        this("localhost", 0, 0, null);
-    }
-
-    /**
      * Constructor 2
      *
      * @param ip   ip to connect to
@@ -141,21 +126,6 @@ public class GreetClient extends Thread {
 
         while (true) {
             receiveMessage();
-            //System.out.println("recieved a message");
-            /*
-            if (receiveMessage()) {
-            if (receiveMessage()) {
-                System.out.println("recieved a message");
-                break;
-            }
-
-             */
-            if (msg != null) { // check if message available
-                out.println(); // send message
-                System.out.println("sent message to server");
-                msg = null; // reset message to null
-
-            }
         }
         //System.out.println("recieved a message");
     }
@@ -167,8 +137,6 @@ public class GreetClient extends Thread {
         try {
             String answer;
             while (!((answer = in.readLine()).equals("3.141592653589"))) {
-                System.out.print("msg: ");
-                System.out.println(answer);
                 switch (answer) {
                     case "STOP" -> {
                         System.out.println("Recipient closed connection.");
@@ -186,13 +154,8 @@ public class GreetClient extends Thread {
                         SP.perfomOnMessageReceive(answer);
                     }
                 }
-                if (this.msg != null) { // check if message available
-                    out.println(); // send message
-                    System.out.println("sent message to server");
-                    this.msg = null; // reset message to null
-
-                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println( "Try/Catch ERROR in 'sendMessage'");
@@ -205,9 +168,7 @@ public class GreetClient extends Thread {
      * send a message to server.
      */
     public void sendMessage(String msg) {
-        this.msg = msg; // :)
-        System.out.println(this.msg);
-        System.out.println("stored message in temp variable"); // TODO remove debug print
+        out.println(msg);
     }
 
     /**

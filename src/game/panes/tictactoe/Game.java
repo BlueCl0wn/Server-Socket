@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * @author Darek Petersen
@@ -27,22 +28,22 @@ public class Game extends JPanel implements ActionListener {
     public int playerID;
 
     // All possible combinations by which one can win...
-    public Field[] row1; // ---
-    public Field[] row2; // ---
-    public Field[] row3; // ---
-    public Field[] row4; // |
-    public Field[] row5; // |
-    public Field[] row6; // |
-    public Field[] row7; // \
-    public Field[] row8; // /
+    public final Field[] row1; // ---
+    public final Field[] row2; // ---
+    public final Field[] row3; // ---
+    public final Field[] row4; // |
+    public final Field[] row5; // |
+    public final Field[] row6; // |
+    public final Field[] row7; // \
+    public final Field[] row8; // /
     // saved in one array for easier access.
-    public Field[][] rows;
+    public final Field[][] rows;
 
     // Timer
     private final Timer timer;
 
     // indicates if game is over or still running
-    private boolean running;
+    public boolean running;
 
     /**
      * main constructor
@@ -64,20 +65,35 @@ public class Game extends JPanel implements ActionListener {
         // initiate current player
         currentPlayer = 1;
 
+        addMouseListener(new MouseAdapter() {// provides empty implementation of all
+            // MouseListener`s methods, allowing us to
+            // override only those which interests us
+            @Override //I override only one method for presentation
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+                System.out.println(e.getX() + "," + e.getY());
+            }
+        });
+
 
         setBackground(Color.BLACK);
         // this.getContentPane().setLayout(null);
 
 
+        addKeyListener(new SelectListener(this));
+
         // Create board with all nine Fields
         board = new Field[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
+
+                // Thought this would be needed for positioning
                 int x = (i+1) * (this.lineWidth + this.fieldWidth);
                 int y = (j+1) * (this.lineWidth + this.fieldWidth);
 
                 // Assign coordinates to field
-                board[i][j] = new Field(x, y, this.fieldWidth);
+                board[i][j] = new Field(this.fieldWidth);
+                    // board[i][j] = new Field(x, y, this.fieldWidth);
 
                 // Add field to JPanel
                 add(board[i][j]);
@@ -115,7 +131,7 @@ public class Game extends JPanel implements ActionListener {
         //   System.out.println("column: " + column);
 
         // Return field.
-        return this.board[row][column];
+        return board[row][column];
     }
 
     /**
@@ -153,7 +169,7 @@ public class Game extends JPanel implements ActionListener {
 
         if (this.running) {
             getField(f).pick(currentPlayer);
-            TicTacToe.client.sendMessage("GAME " + currentPlayer + " " + f);
+            TicTacToe.client.sendMessage("GAME PICK " + currentPlayer + " " + f);
             currentPlayer = (currentPlayer == 1) ? 2 : 1;
         }
     }
@@ -165,8 +181,8 @@ public class Game extends JPanel implements ActionListener {
      */
     public void opponentPickedField(int f, int player) {
         if (this.running) {
-            getField(f).pick(currentPlayer);
             if (currentPlayer == player) {
+                getField(f).pick(currentPlayer);
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;
             } else {
                 System.out.println("Error: The player IDs ar not the same.");
@@ -195,10 +211,10 @@ public class Game extends JPanel implements ActionListener {
                 for (Field f : row) {
                     f.setBackground(Color.RED);
                 }
-                return false;
+                return false; // someone won
             }
         }
-        return true;
+        return true; // no one won
     }
 
     /**
@@ -250,17 +266,29 @@ public class Game extends JPanel implements ActionListener {
             Toolkit.getDefaultToolkit().sync();
             //brett.draw(g);
         } else {
-            /*
-            Font f = new Font("Calibri", Font.BOLD, 16);
-            FontMetrics metrics = getFontMetrics(f);
-
-            g.setColor(Color.lightGray);
-            g.setFont(f);
-            g.drawString("Game Over!", (this.totalWidth - metrics.stringWidth("Game Over - You died, noob!")),
-                    this.totalWidth/2);
-
-             */
         }
+    }
+
+    public void receive(String msg) {
+        if (msg.startsWith("GAME PICK")) { // Field has been picked
+
+            //extract field number and player id
+            int player = Integer.parseInt(msg.substring(10, 11));
+            int f = Integer.parseInt(msg.substring(12, 13));
+
+            //pick field
+            opponentPickedField(f, player);
+
+        } else if (msg.startsWith("GAME RESET")) { // Game has been reset
+            resetGame();
+        }
+
+        // Basically 'actionPerformed()'
+        if (running) {
+            this.checkForWinner();
+        }
+        repaint();
+
     }
 
     // TODO introduce receive message which handles messages from server Room

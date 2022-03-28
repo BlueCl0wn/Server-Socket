@@ -162,7 +162,7 @@ public class GreetServerClientHandler extends Thread implements Observer {
 
     /**
      * Return array of members if current room
-     * If not in room returns null array
+     * If not in room, returns null array
      * @return GreetServerClientHandler[]
      */
     private GreetServerClientHandler[] getMembers() {

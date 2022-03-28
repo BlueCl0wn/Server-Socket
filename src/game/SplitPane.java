@@ -7,20 +7,22 @@ import game.panes.tictactoe.SelectListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Darek Petersen
  * @version 0.2
  */
-public class SplitPane extends JSplitPane {
+public class SplitPane extends JSplitPane implements ActionListener {
     // TicTacToe game
-    public Game tictactoe;
+    public final Game tictactoe;
 
     // capsule for tictactoe so that it can't be resized
-    public JPanel rightCapsule;
+    private final JPanel rightCapsule;
 
     // left side
-    public InteractionWindow IW;
+    public final InteractionWindow IW;
 
 
     /**
@@ -37,6 +39,8 @@ public class SplitPane extends JSplitPane {
         this.rightCapsule = new JPanel();
         this.tictactoe = new Game();
         this.rightCapsule.setPreferredSize(new Dimension(this.tictactoe.totalWidth,this.tictactoe.totalWidth));
+        rightCapsule.setFocusable(true);
+        rightCapsule.add(tictactoe);
         //rightCapsule.add(tictactoe);
 
         // initiating left side
@@ -44,24 +48,27 @@ public class SplitPane extends JSplitPane {
 
         // setting Container as sides
         setLeftComponent(this.IW);
-        setRightComponent(this.tictactoe);
+        //setRightComponent(this.tictactoe);
+        setRightComponent(this.rightCapsule);
 
         addKeyListener(new SelectListener(this.tictactoe));
     }
 
     public void perfomOnMessageReceive(String msg) {
         if (msg.startsWith("GAME")) { // Message is directed to game
-
-            // Create Substrings for alter usage
-            int f = Integer.parseInt(msg.substring(5, 6));
-            int player = Integer.parseInt(msg.substring(7, 8));
-            // TODO update in a way that allows multiple commands for 'Game'
-
-            // actually pick field
-            this.tictactoe.opponentPickedField(f, player);
+            tictactoe.receive(msg);
+            IW.performOnMessageReceive(msg);
         } else if (msg.startsWith("IW")) { // message is directed to InteractionWindow
             // forward to InteractionWindow
             IW.performOnMessageReceive(msg);
         }
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (tictactoe.running) {
+            tictactoe.running = tictactoe.checkIfStillPlaying();
+        }
+    }
+
 }

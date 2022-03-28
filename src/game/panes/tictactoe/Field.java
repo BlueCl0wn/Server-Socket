@@ -9,8 +9,6 @@ import java.awt.*;
  * @version 1.0
  */
 public class Field extends JPanel{
-    public int x;
-    public int y;
     public int width;
 
     private Color color;
@@ -20,13 +18,9 @@ public class Field extends JPanel{
 
     /**
      * main constructor
-     * @param x x position
-     * @param y y position
      * @param width width and height of field
      */
-    public Field(int x, int y, int width) {
-        this.x = x;
-        this.y = y;
+    public Field(int width) {
         this.width = width;
         this.color = Color.WHITE;
 
@@ -35,14 +29,11 @@ public class Field extends JPanel{
         setBackground(this.color);
     }
 
-
     /**
      * actually used constructor
-     * @param x x-coordinate
-     * @param y y-coordinate
      */
-    public Field(int x, int y, int fieldWidth, Color color) {
-        this(x, y, fieldWidth);
+    public Field(int fieldWidth, Color color) {
+        this(fieldWidth);
         this.color = color;
 
     }

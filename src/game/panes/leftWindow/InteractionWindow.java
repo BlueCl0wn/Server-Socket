@@ -2,7 +2,8 @@ package game.panes.leftWindow;
 
 // import-statements
 import game.panes.leftWindow.tabs.*;
-import javax.swing.JTabbedPane;
+
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -11,31 +12,22 @@ import java.awt.*;
  */
 public class InteractionWindow extends JTabbedPane {
     // chat
-    private Chat tabChat;
+    private final Chat tabChat;
 
-    // settings
-    private Settings tabSettings;
-
-    // room
-    private Room tabRoom;
 
     // console
-    private Console tabConsole;
+    private final Console tabConsole;
+
 
     public InteractionWindow() {
         super(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
         setPreferredSize(new Dimension(600, 500));
 
         this.tabChat = new Chat();
-        this.tabSettings = new Settings();
-        this.tabRoom = new Room();
         this.tabConsole = new Console();
 
-
-        addTab("Chat", this.tabChat);
         addTab("Console", this.tabConsole);
-        addTab("Settings", this.tabSettings);
-        addTab("Room", this.tabRoom);
+        addTab("Chat", this.tabChat);
     }
 
     public void performOnMessageReceive(String msg) {
@@ -43,14 +35,14 @@ public class InteractionWindow extends JTabbedPane {
 
         String subMsg = msg.substring(3);
 
-        if (subMsg.startsWith("CHAT")) {
+        if (subMsg.startsWith("CHAT")) { // Hier wollte ich eigentlich noch einen Chat für Player-to-Player Kommunikation einfuegen.
             this.tabChat.receive(subMsg.substring(5));
-        } else if (subMsg.startsWith("SETTINGS")) {
-            this.tabSettings.receive(subMsg.substring(9));
+        }
 
-        } else if (subMsg.startsWith("ROOM"))
-            this.tabRoom.receive(subMsg.substring(5));
-
+        /*
+        Hier können mit weiteren 'else-if' und entsprechenden Anpassungen weitere Tabs auf der linken Seite hinzugefügt werden.
+        Ein Beispiel wäre ein Tab, um erst nach dem Ausführen des Programms mit einem Server verbinden zu können.
+         */
     }
 
 }

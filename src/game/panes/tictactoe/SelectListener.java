@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
  * @version 2.0
  */
 public class SelectListener extends KeyAdapter {
-    private Game game;
+    private final Game game;
 
     public SelectListener(Game game) {
         this.game = game;
