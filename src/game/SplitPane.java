@@ -18,9 +18,6 @@ public class SplitPane extends JSplitPane implements ActionListener {
     // TicTacToe game
     public final Game tictactoe;
 
-    // capsule for tictactoe so that it can't be resized
-    private final JPanel rightCapsule;
-
     // left side
     public final InteractionWindow IW;
 
@@ -36,11 +33,12 @@ public class SplitPane extends JSplitPane implements ActionListener {
         setFocusable(true);
 
         // initiating and encapsulating 'tictactoe'.
-        this.rightCapsule = new JPanel();
+        // capsule for tictactoe so that it can't be resized
+        JPanel rightCapsule = new JPanel();
         this.tictactoe = new Game();
-        this.rightCapsule.setPreferredSize(new Dimension(this.tictactoe.totalWidth,this.tictactoe.totalWidth));
+        rightCapsule.setPreferredSize(new Dimension(this.tictactoe.totalWidth,this.tictactoe.totalWidth));
         rightCapsule.setFocusable(true);
-        rightCapsule.add(tictactoe);
+       // rightCapsule.add(tictactoe);
         //rightCapsule.add(tictactoe);
 
         // initiating left side
@@ -49,7 +47,7 @@ public class SplitPane extends JSplitPane implements ActionListener {
         // setting Container as sides
         setLeftComponent(this.IW);
         //setRightComponent(this.tictactoe);
-        setRightComponent(this.rightCapsule);
+        setRightComponent(this.tictactoe);
 
         addKeyListener(new SelectListener(this.tictactoe));
     }
@@ -57,11 +55,8 @@ public class SplitPane extends JSplitPane implements ActionListener {
     public void perfomOnMessageReceive(String msg) {
         if (msg.startsWith("GAME")) { // Message is directed to game
             tictactoe.receive(msg);
-            IW.performOnMessageReceive(msg);
-        } else if (msg.startsWith("IW")) { // message is directed to InteractionWindow
-            // forward to InteractionWindow
-            IW.performOnMessageReceive(msg);
         }
+        IW.performOnMessageReceive(msg); // forward to leftSide (mainly for console)
     }
 
     @Override

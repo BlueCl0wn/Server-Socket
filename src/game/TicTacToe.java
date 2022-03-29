@@ -17,7 +17,7 @@ public class TicTacToe extends JFrame {
     public TicTacToe() {
         this.SP = new SplitPane();
 
-        client = new GreetClient("localhost", 64767, 0, this.SP);
+        client = new GreetClient("localhost", 55870, 0, this.SP);
         client.start();
 
         // add(new Game());

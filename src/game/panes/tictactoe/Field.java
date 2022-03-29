@@ -9,7 +9,7 @@ import java.awt.*;
  * @version 1.0
  */
 public class Field extends JPanel{
-    public int width;
+    public final int width;
 
     private Color color;
 

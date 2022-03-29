@@ -26,7 +26,7 @@ public class SelectListener extends KeyAdapter {
         int key_id = e.getKeyCode();
 
         if (key_id == KeyEvent.VK_NUMPAD1 && this.game.isFieldFree(1)) {
-            this.game.pickField(1); //TODO Need to find a way to that allows the player ID to be set through server communcation
+            this.game.pickField(1);
         }
         if (key_id == KeyEvent.VK_NUMPAD2 && this.game.isFieldFree(2)) {
             this.game.pickField(2);

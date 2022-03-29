@@ -25,6 +25,7 @@ public class Game extends JPanel implements ActionListener {
     // Current player stored with an according ID
     public static int currentPlayer;
 
+    // own player ID (for one round)
     public int playerID;
 
     // All possible combinations by which one can win...
@@ -54,8 +55,15 @@ public class Game extends JPanel implements ActionListener {
         this.totalWidth = 4 * lineWidth + 3 * fieldWidth;
 
         addKeyListener(new SelectListener(this));
-        setPreferredSize(new Dimension(this.totalWidth, this.totalWidth));
+        //setPreferredSize(new Dimension(this.totalWidth, this.totalWidth));
         setFocusable(true);
+        //setBackground(Color.BLACK);
+
+
+        JPanel container = new JPanel();
+        container.setPreferredSize(new Dimension(this.totalWidth, this.totalWidth));
+        container.setFocusable(true);
+        container.setBackground(Color.BLACK);
 
         running = true;
 
@@ -63,7 +71,11 @@ public class Game extends JPanel implements ActionListener {
         timer.start();
 
         // initiate current player
+        /*
         currentPlayer = 1;
+        playerID ==
+
+         */
 
         addMouseListener(new MouseAdapter() {// provides empty implementation of all
             // MouseListener`s methods, allowing us to
@@ -76,11 +88,13 @@ public class Game extends JPanel implements ActionListener {
         });
 
 
-        setBackground(Color.BLACK);
         // this.getContentPane().setLayout(null);
 
 
         addKeyListener(new SelectListener(this));
+
+
+
 
         // Create board with all nine Fields
         board = new Field[3][3];
@@ -96,9 +110,10 @@ public class Game extends JPanel implements ActionListener {
                     // board[i][j] = new Field(x, y, this.fieldWidth);
 
                 // Add field to JPanel
-                add(board[i][j]);
+                container.add(board[i][j]);
             }
         }
+        add(container);
 
         // Assign possible winning situations
         row1 = new Field[] {board[0][0], board[0][1], board[0][2]}; // ---
@@ -150,27 +165,17 @@ public class Game extends JPanel implements ActionListener {
     }
 
     /**
-     * start game
-     * inform server room about it
-     */
-    public void startGame() {
-        this.running = true;
-        resetBoard();
-       // playerID = // TODO finish 'startGame()'
-
-    }
-
-    /**
      * Assign a field to a player
      * @param f field number
      */
     public void pickField(int f) {
         //    System.out.println("called 'game.pickField'");
 
-        if (this.running) {
+        if (this.running && currentPlayer == playerID) {
             getField(f).pick(currentPlayer);
             TicTacToe.client.sendMessage("GAME PICK " + currentPlayer + " " + f);
             currentPlayer = (currentPlayer == 1) ? 2 : 1;
+            setBackground(Color.RED);
         }
     }
 
@@ -184,6 +189,7 @@ public class Game extends JPanel implements ActionListener {
             if (currentPlayer == player) {
                 getField(f).pick(currentPlayer);
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                setBackground(Color.GREEN);
             } else {
                 System.out.println("Error: The player IDs ar not the same.");
             }
@@ -209,7 +215,7 @@ public class Game extends JPanel implements ActionListener {
         for (Field[] row : this.rows) {
             if (row[0].status != 0 && row[0].status == row[1].status && row[1].status == row[2].status) {
                 for (Field f : row) {
-                    f.setBackground(Color.RED);
+                    f.setBackground(Color.YELLOW);
                 }
                 return false; // someone won
             }
@@ -221,6 +227,15 @@ public class Game extends JPanel implements ActionListener {
      * Resets game for a new round of freshly harvested TicTacToe.
      */
     public void resetGame() {
+        this.resetBoard();
+        running = true;
+        TicTacToe.client.sendMessage("GAME RESET");
+    }
+
+    /**
+     * Resets game for a new round of freshly harvested TicTacToe.
+     */
+    public void opponenetResetGame() {
         this.resetBoard();
         running = true;
     }
@@ -265,7 +280,6 @@ public class Game extends JPanel implements ActionListener {
 
             Toolkit.getDefaultToolkit().sync();
             //brett.draw(g);
-        } else {
         }
     }
 
@@ -280,7 +294,13 @@ public class Game extends JPanel implements ActionListener {
             opponentPickedField(f, player);
 
         } else if (msg.startsWith("GAME RESET")) { // Game has been reset
-            resetGame();
+            opponenetResetGame();
+        } else if (msg.equals("GAME YOU FIRST")) { // start
+            currentPlayer = 1;
+            playerID = 1;
+        } else if (msg.equals("GAME YOU SECOND")) { // second
+            currentPlayer = 1;
+            playerID = 2;
         }
 
         // Basically 'actionPerformed()'
@@ -291,5 +311,4 @@ public class Game extends JPanel implements ActionListener {
 
     }
 
-    // TODO introduce receive message which handles messages from server Room
 }

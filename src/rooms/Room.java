@@ -3,6 +3,7 @@ package rooms;
 import server.GreetServerClientHandler;
 
 import java.util.Observable;
+import java.util.Random;
 
 /**
  * @author Darek Petersen
@@ -11,9 +12,9 @@ import java.util.Observable;
 public class Room extends Observable {
     public final int id;
 
-    public final GreetServerClientHandler[] clients;
+    private final GreetServerClientHandler[] clients;
 
-    public String message;
+    private String message;
 
     /**
      * Main Constructor
@@ -71,17 +72,43 @@ public class Room extends Observable {
         throw new Exception("Element not found in array.");
     }
 
-    public boolean addClient(GreetServerClientHandler client) {
+    /**
+     * add client to room
+     *
+     * @param client GreetServerClientHandler
+     * @return boolean
+     */
+    public boolean addClient(GreetServerClientHandler client) throws Exception {
+        boolean res = true;
         for (GreetServerClientHandler c : clients) {
             if (c == null) {
-                clients[1] = client;
+                if (clients[0] == null) {
+                    clients[0] = client;
+                } else if (clients[1] == null) {
+                    clients[1] = client;
+                }
                 this.addObserver(client);
-                return true;
-            } else if (c == client) {
-                return false;
+                res = true;
+            } else if (c != client) {
+                res = false;
             }
         }
-        return false;
+
+        chooseStartPlayer();
+
+        return res;
+    }
+
+    private void chooseStartPlayer() {
+        Random r = new Random();
+        if (isFull()) {
+            // generate starter
+            int starter = (int) (r.nextDouble() + 0.5); // randomly choose either 0 or 1
+
+            // notify
+            clients[starter].sendToClient("GAME YOU FIRST"); // notify starter
+            clients[(starter == 0) ? 1 : 0].sendToClient("GAME YOU SECOND"); // notify second
+        }
     }
 
     public void removeClient(GreetServerClientHandler client) throws Exception {
@@ -90,16 +117,6 @@ public class Room extends Observable {
             this.clients[pos] = null;
             this.deleteObserver(client);
         }
-    }
-
-    /**
-     * Checks for equality with parsed ID.
-     *
-     * @param checkingId ID that is being compared
-     * @return boolean
-     */
-    public boolean equal(final int checkingId) {
-        return this.id == checkingId;
     }
 
     /**
@@ -136,11 +153,23 @@ public class Room extends Observable {
     }
 
     /**
-     *
+     * check if Room is empty
      */
     public boolean isEmpty() {
         for (GreetServerClientHandler c : clients) {
             if (c == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+     /**
+     * check if Room is full
+     */
+    public boolean isFull() {
+        for (GreetServerClientHandler c : clients) {
+            if (c != null) {
                 return true;
             }
         }

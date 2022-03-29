@@ -4,8 +4,6 @@ import game.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -13,37 +11,52 @@ import java.util.ArrayList;
  * @version 0.1
  */
 public class Console extends JPanel {
-    // input
-    private JPanel input;
 
     private final JTextField textField;
-    private final JButton button;
 
 
     // answers
     private JScrollPane scrollPane;
+    private final JLabel label;
+    private final JLabel labelAlt;
+    private String msgAlt;
 
-    private ArrayList<String> answers;
 
 
     public Console() {
+        setLayout(new BoxLayout(this, javax.swing.BoxLayout.Y_AXIS ));
 
         // input
         textField = new JTextField(20);
         textField.setPreferredSize(new Dimension(300, 30));
-        button = new JButton("send");
+        JButton button = new JButton("send");
         button.addActionListener(e -> TicTacToe.client.sendMessage(textField.getText()));
 
-        add(textField);
-        add(button);
+        // input
+        JPanel input = new JPanel();
 
+        input.add(textField);
+        input.add(button);
+        add(input);
+
+        label = new JLabel("");
+        labelAlt = new JLabel("");
+        msgAlt = "";
+
+        add(label);
+        add(new JPanel());
+        add(labelAlt);
+        add(new JPanel());
+        add(new JPanel());
+        add(new JPanel());
 
     }
 
     public void receive(String msg) {
-        System.out.println(msg); // TODO add method that changes JTextField in app
-        answers.add(msg);
+        label.setText(msg);
+        labelAlt.setText(msgAlt);
+        msgAlt = msg;
 
-        scrollPane.add(new JLabel(msg));
+        //scrollPane.add(new JLabel(msg));
     }
 }

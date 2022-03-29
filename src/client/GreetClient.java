@@ -125,7 +125,10 @@ public class GreetClient extends Thread {
         System.out.println("started transmission");
 
         while (true) {
-            receiveMessage();
+            if (!receiveMessage()) {
+                break;
+            }
+
         }
         //System.out.println("recieved a message");
     }
@@ -147,12 +150,7 @@ public class GreetClient extends Thread {
                     case "." -> {
                         return true;
                     }
-                    default -> {
-                        // TODO comment debug print
-                        System.out.print("Answer: ");
-                        System.out.println(answer);
-                        SP.perfomOnMessageReceive(answer);
-                    }
+                    default -> SP.perfomOnMessageReceive(answer);
                 }
             }
 

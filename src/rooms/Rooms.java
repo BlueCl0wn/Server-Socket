@@ -54,13 +54,13 @@ public class Rooms {
      * @param client Client who wants to join a room.
      * @param roomId ID of the room that is to be joined.
      */
-    public boolean joinRoom(GreetServerClientHandler client, int roomId) {
+    public boolean joinRoom(GreetServerClientHandler client, int roomId) throws Exception {
         for (Room openRoom : openRooms) {
             if (openRoom.id == roomId) {
                 return openRoom.addClient(client);
             }
         }
-        return false;
+        return false; // room does not exist
     }
 
     /**
